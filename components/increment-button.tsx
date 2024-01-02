@@ -7,10 +7,14 @@ import { program, mintPDA } from "@/anchor/setup";
 import { Button } from "@nextui-org/button";
 import toast, { Toaster } from "react-hot-toast";
 
+import { useRouter } from "next/navigation";
+
 export default function IncrementButton() {
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
   const [isLoading, setIsLoading] = useState(false);
+
+  const router = useRouter();
 
   const onClick = async () => {
     if (!publicKey) return;
@@ -35,6 +39,32 @@ export default function IncrementButton() {
         transaction,
         connection
       );
+
+      // Define the data you want to send
+      const transactionData = {
+        transactionSignature: transactionSignature,
+        publicKey: publicKey.toBase58(),
+      };
+
+      // Call the API
+      fetch("/api/insertTransaction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(transactionData),
+      })
+        .then((response) => {
+          return response.json(); // Parse the JSON data in the response
+        })
+        .then((data) => {
+          console.log("Transaction Data:", data); // 'data' contains the actual transactions array
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
+      router.refresh();
 
       toast.success(
         <a

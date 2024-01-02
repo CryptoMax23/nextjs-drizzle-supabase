@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrations:generate": "drizzle-kit generate:pg",
+    "migrations:push": "node -r esbuild-register lib/db/migrate.ts"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.29.0",
@@ -17,9 +19,14 @@
     "@solana/wallet-adapter-react-ui": "^0.9.34",
     "@solana/wallet-adapter-solflare": "^0.6.28",
     "@solana/web3.js": "^1.87.6",
+    "@supabase/ssr": "^0.0.10",
+    "@supabase/supabase-js": "^2.39.1",
+    "dotenv": "^16.3.1",
+    "drizzle-orm": "^0.29.2",
     "framer-motion": "^10.16.4",
     "next": "14.0.2",
     "next-themes": "^0.2.1",
+    "postgres": "^3.4.3",
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1"
@@ -29,6 +36,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
+    "drizzle-kit": "^0.20.9",
     "eslint": "^8",
     "eslint-config-next": "14.0.2",
     "postcss": "^8",

@@ -9,6 +9,10 @@ import { Tooltip } from "@nextui-org/tooltip";
 import Image from "next/image";
 import SolanaLogo from "../public/solanaLogo.svg";
 
+import SignIn from "@/app/oauth/components/signin";
+import SignOut from "@/app/oauth/components/signout";
+import Login from "@/app/oauth/components/login";
+
 export function NavBar() {
   return (
     <Navbar>
@@ -21,6 +25,11 @@ export function NavBar() {
             <WalletMultiButton />
           </NavbarItem>
         </Tooltip>
+        <NavbarItem>
+          {/* <SignIn />
+          <SignOut /> */}
+          <Login />
+        </NavbarItem>
       </NavbarContent>
     </Navbar>
   );
