@@ -13,12 +13,11 @@ export default function SignIn() {
         redirectTo: `${location.origin}/oauth/callback`,
       },
     });
-
     console.log(response);
   };
 
   return (
-    <Button className="w-full" onClick={loginWithGithub}>
+    <Button className="w-20" onClick={loginWithGithub}>
       Sign In
     </Button>
   );

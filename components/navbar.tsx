@@ -12,8 +12,37 @@ import SolanaLogo from "../public/solanaLogo.svg";
 import SignIn from "@/app/oauth/components/signin";
 import SignOut from "@/app/oauth/components/signout";
 import Login from "@/app/oauth/components/login";
+import { getAllTransactions, insertUser } from "@/lib/db/queries";
 
-export function NavBar() {
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+export async function NavBar() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  console.log(user);
+
+  if (user) {
+    console.log(user);
+
+    const newUser = {
+      id: user.id,
+      email: user.email ?? null,
+      fullName: user.user_metadata?.full_name ?? null,
+      userName: user.user_metadata?.user_name ?? null,
+      createdAt: user.created_at ?? null,
+      updatedAt: user.updated_at ?? null,
+    };
+
+    try {
+      const insertedUser = await insertUser(newUser);
+      console.log("User inserted:", insertedUser);
+    } catch (error) {
+      console.error("Error inserting user:", error);
+    }
+  } else {
+    console.log("No user data available to insert.");
+  }
   return (
     <Navbar>
       <NavbarBrand>
@@ -26,9 +55,20 @@ export function NavBar() {
           </NavbarItem>
         </Tooltip>
         <NavbarItem>
-          {/* <SignIn />
-          <SignOut /> */}
-          <Login />
+          <div className="rounded-full bg-white overflow-hidden">
+            <Image
+              className={user ? "" : "scale-125"} // Apply scale only for "github.png"
+              width={40}
+              height={40}
+              src={user?.user_metadata?.avatar_url || "/github.png"}
+              quality={100}
+              alt=""
+            />
+          </div>
+        </NavbarItem>
+        <NavbarItem>
+          {user ? <SignOut /> : <SignIn />}
+          {/* <Login /> */}
         </NavbarItem>
       </NavbarContent>
     </Navbar>

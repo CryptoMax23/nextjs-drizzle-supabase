@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrations:generate": "drizzle-kit generate:pg",
-    "migrations:push": "node -r esbuild-register lib/db/migrate.ts"
+    "generate": "drizzle-kit generate:pg",
+    "push": "node -r esbuild-register lib/db/migrate.ts",
+    "introspect": "drizzle-kit introspect:pg"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.29.0",

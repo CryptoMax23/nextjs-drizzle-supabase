@@ -14,7 +14,7 @@ export default function SignOut() {
   };
 
   return (
-    <Button className="w-full" onClick={logout}>
+    <Button className="w-20" onClick={logout}>
       Sign Out
     </Button>
   );

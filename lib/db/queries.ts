@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { DBTransaction, transactions } from "./schema";
+import { DBTransaction, Users, users, transactions } from "./schema";
 
 export async function getAllTransactions(): Promise<DBTransaction[]> {
   // Use the 'select' method to retrieve all records from the 'transactions' table
@@ -17,4 +17,22 @@ export async function insertTransaction(
     .returning();
 
   return insertedTransaction;
+}
+
+export async function insertUser(newUser: Users): Promise<Users[]> {
+  const insertedUser = await db
+    .insert(users)
+    .values(newUser)
+    .onConflictDoUpdate({
+      target: users.id,
+      set: {
+        email: newUser.email,
+        fullName: newUser.fullName,
+        userName: newUser.userName,
+        updatedAt: newUser.updatedAt
+      }
+    })
+    .returning();
+
+  return insertedUser;
 }

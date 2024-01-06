@@ -11,7 +11,6 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/";
 
   if (code) {
     const supabase = await createSupabaseServerClient();
@@ -21,7 +20,6 @@ export async function GET(request: Request) {
       return NextResponse.redirect(requestUrl.origin);
     }
   }
-
 
   return NextResponse.redirect("/");
 }
