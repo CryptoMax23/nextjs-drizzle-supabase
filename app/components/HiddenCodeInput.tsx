@@ -72,6 +72,13 @@ export const HiddenCodeInput = ({
       const typed = e.target.value.substring(input.length);
       for (const char of typed) {
         if (isSkippable(char)) continue;
+
+        // Check for incorrect characters
+        const incorrectChars = useCodeStore.getState().incorrectChars();
+        if (incorrectChars.length > 0) {
+          // If there's already an incorrect character, ignore further input
+          break;
+        }
         const keyPress = keyPressFactory(char);
         handleKeyPress(keyPress);
         // game.sendKeyStroke(keyPress);

@@ -2,18 +2,12 @@ import create from "zustand";
 import { cpmToWPM } from "./cpmToWPM";
 const codeString = `const keypair = Keypair.generate();
 
-const connection = new Connection("http://127.0.0.1:8899", "confirmed");
+const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
 const signature = await connection.requestAirdrop(
   keypair.publicKey,
   LAMPORTS_PER_SOL
-);
-const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-await connection.confirmTransaction({
-  blockhash,
-  lastValidBlockHeight,
-  signature
-`;
+);`;
 export interface KeyStroke {
   key: string;
   timestamp: number;
