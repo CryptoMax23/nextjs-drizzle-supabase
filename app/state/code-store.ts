@@ -1,5 +1,7 @@
 import create from "zustand";
 import { cpmToWPM } from "./cpmToWPM";
+
+// const codeString = `const keypair = Keypair.generate();`;
 const codeString = `const keypair = Keypair.generate();
 
 const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -47,6 +49,12 @@ interface CodeState {
   _getBackspaceOffset: () => number;
   _getForwardOffset: () => number;
   _allCharsTyped: () => boolean;
+  calculateResults: () => {
+    timeMS: number;
+    cpm: number;
+    mistakes: number;
+    accuracy: number;
+  } | null;
 }
 
 // There are 3 separate parts of logic in this store
@@ -251,6 +259,18 @@ export const useCodeStore = create<CodeState>((set, get) => ({
     }
     return offset;
   },
+  calculateResults: () => {
+    const startTime = get().startTime;
+    const keyStrokes = get().keyStrokes;
+    if (!startTime) return null;
+
+    const timeMS = ResultCalculationService.getTimeMS(startTime, keyStrokes);
+    const cpm = ResultCalculationService.getCPM(get().code, timeMS);
+    const mistakes = ResultCalculationService.getMistakesCount(keyStrokes);
+    const accuracy = ResultCalculationService.getAccuracy(keyStrokes);
+
+    return { timeMS, cpm, mistakes, accuracy };
+  },
 }));
 
 export enum TrackedKeys {
@@ -278,5 +298,40 @@ export function isSkippable(key: string) {
       return true;
     default:
       return false;
+  }
+}
+
+export class ResultCalculationService {
+  static getTimeMS(startTime: Date, keyStrokes: KeyStroke[]): number {
+    const firstTimeStampMS = startTime.getTime();
+    const lastTimeStampMS = keyStrokes[keyStrokes.length - 1].timestamp;
+    return lastTimeStampMS - firstTimeStampMS;
+  }
+
+  static getCPM(code: string, timeMS: number): number {
+    const timeSeconds = timeMS / 1000;
+    const strippedCode = this.getStrippedCode(code);
+    const cps = strippedCode.length / timeSeconds;
+    return Math.floor(cps * 60);
+  }
+
+  static getMistakesCount(keyStrokes: KeyStroke[]): number {
+    return keyStrokes.filter((stroke) => !stroke.correct).length;
+  }
+
+  static getAccuracy(keyStrokes: KeyStroke[]): number {
+    const validKeyStrokes = keyStrokes.filter(
+      (stroke) => stroke.correct
+    ).length;
+    const totalKeyStrokes = keyStrokes.length;
+    return Math.floor((validKeyStrokes / totalKeyStrokes) * 100);
+  }
+
+  static getStrippedCode(code: string): string {
+    const strippedCode = code
+      .split("\n")
+      .map((subText) => subText.trimStart())
+      .join("\n");
+    return strippedCode;
   }
 }
