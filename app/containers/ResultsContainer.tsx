@@ -18,6 +18,7 @@ import ResultsChart from "../components/ResultsChart";
 // import { useGameStore } from "../state/game-store";
 // import { useTrendStore } from "../state/trends-store";
 import { useCodeStore } from "../state/code-store";
+import { ButtonHTMLAttributes, useEffect } from "react";
 
 export function ResultsText({
   info,
@@ -95,7 +96,7 @@ export function ResultsText({
 export function ResultsContainer() {
   // const result = useGameStore((state) => state.myResult);
 
-  const { calculateResults } = useCodeStore();
+  const { calculateResults, reset } = useCodeStore();
   const result = calculateResults();
   // TODO: Show loading indicator here
   if (!result) return null;
@@ -107,6 +108,23 @@ export function ResultsContainer() {
   const accuracy = result.accuracy;
   // const base = window.location.origin;
   // const url = `${base}/results/${result.id}`;
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        reset();
+        event.preventDefault();
+      }
+    };
+
+    // Adding the event listener
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [reset]);
   return (
     <div className="w-full flex flex-col">
       <div className="w-full flex flex-row gap-4 justify-between mb-2">
@@ -169,6 +187,16 @@ export function ResultsContainer() {
       <div className="w-full flex flex-col sm:flex-row">
         {/* {!result.user.isAnonymous ? <TrendsWPM currWPM={wpm} /> : null} */}
         <ResultsChart />
+      </div>
+      <div className="flex justify-center items-center text-faded-gray gap-1">
+        <button
+          onClick={reset}
+          title="Refresh the challenge"
+          className="flex text-sm font-light text-black items-center justify-center gap-2 rounded-3xl bg-gray-300 hover:bg-gray-400 hover:cursor-pointer px-3 py-0.5 my-1"
+          style={{ fontFamily: "Fira Code" }}
+        >
+          <div className="hidden sm:flex">refresh</div>
+        </button>
       </div>
     </div>
   );

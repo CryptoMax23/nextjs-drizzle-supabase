@@ -1,15 +1,15 @@
 import create from "zustand";
 import { cpmToWPM } from "./cpmToWPM";
 
-// const codeString = `const keypair = Keypair.generate();`;
-const codeString = `const keypair = Keypair.generate();
+const codeString = `const keypair = Keypair.generate();`;
+// const codeString = `const keypair = Keypair.generate();
 
-const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+// const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
-const signature = await connection.requestAirdrop(
-  keypair.publicKey,
-  LAMPORTS_PER_SOL
-);`;
+// const signature = await connection.requestAirdrop(
+//   keypair.publicKey,
+//   LAMPORTS_PER_SOL
+// );`;
 export interface KeyStroke {
   key: string;
   timestamp: number;
@@ -55,6 +55,7 @@ interface CodeState {
     mistakes: number;
     accuracy: number;
   } | null;
+  reset: () => void;
 }
 
 // There are 3 separate parts of logic in this store
@@ -270,6 +271,17 @@ export const useCodeStore = create<CodeState>((set, get) => ({
     const accuracy = ResultCalculationService.getAccuracy(keyStrokes);
 
     return { timeMS, cpm, mistakes, accuracy };
+  },
+  reset: () => {
+    set((state) => ({
+      ...state,
+      startTime: undefined,
+      endTime: undefined,
+      keyStrokes: [],
+      code: codeString,
+      index: 0,
+      correctIndex: 0,
+    }));
   },
 }));
 
