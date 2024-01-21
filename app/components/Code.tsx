@@ -33,7 +33,7 @@ export default function CodeTyping() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full"
+          className="w-full lg:min-w-[980px]"
         >
           {!isCompleted && (
             <CodeTypingContainer filePath="test" language="typescript" />

@@ -27,16 +27,20 @@ export const useBlinkingCursorAnimation = (
       controls.stop();
       return;
     }
-    if (!isPlaying) {
-      controls.start({
-        backgroundColor: ["rgba(0,0,0,0)", color],
-      });
-    } else {
-      controls.set({
-        backgroundColor: ["rgba(0,0,0,0)", color],
-      });
-      controls.stop();
-    }
+
+    controls.start({
+      backgroundColor: ["rgba(0,0,0,0)", color],
+    });
+    // if (!isPlaying) {
+    //   controls.start({
+    //     backgroundColor: ["rgba(0,0,0,0)", color],
+    //   });
+    // } else {
+    //   controls.set({
+    //     backgroundColor: ["rgba(0,0,0,0)", color],
+    //   });
+    //   controls.stop();
+    // }
   }, [runAnimation, color, controls, isPlaying]);
   return controls;
 };
